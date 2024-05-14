@@ -1,5 +1,5 @@
 //*********************************
-// */10 * * * * * https://raw.githubusercontent.com/chouchoui/QuanX/master/Scripts/testflight/Auto_join_TF.js, tag=TestFlight自动加入, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/testflight.png, enabled=true
+// */10 * * * * * https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/Auto_join_TF.js, tag=TestFlight自动加入, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/testflight.png, enabled=true
 //*********************************
 
 !(async () => {
