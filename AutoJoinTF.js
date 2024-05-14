@@ -1,6 +1,6 @@
 /******************************************
- * @name TestFlight监控
- * @description 仅适配除Surge外其他工具, Surge用户请使用原脚本
+ * @name TestFlight Monitor 08/24
+ * @description Chỉ thích hợp với các công cụ khác ngoài Surge, người dùng Surge vui lòng sử dụng script gốc
  * @channel https://t.me/yqc_123/
  * @feedback https://t.me/yqc_777/
  * @update 20240320
@@ -17,38 +17,38 @@ hostname = testflight.apple.com
 ^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$ url script-request-header https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js
 
 [task_local]
-0/5 * * * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js, tag=TF监控自动加入, img-url=https://raw.githubusercontent.com/githubdulong/Script/master/Images/testflight.png, enabled=true
+0/5 * * * * * https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js, tag=TF Monitor tự động tham gia, img-url=https://raw.githubusercontent.com/githubdulong/Script/master/Images/testflight.png, enabled=true
 ******************************************
 Loon cấu hình:
 [MITM]
 hostname = testflight.apple.com
 
 [Script]
-http-request ^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$ tag=TF获取参数, script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js
-cron "0/5 * * * * *" script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js, timeout=10, tag=TF监控自动加入, img-url=https://raw.githubusercontent.com/githubdulong/Script/master/Images/testflight.png
+http-request ^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$ tag=TF Lấy tham số, script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js
+cron "0/5 * * * * *" script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js, timeout=10, tag=TF Monitor tự động tham gia, img-url=https://raw.githubusercontent.com/githubdulong/Script/master/Images/testflight.png
 ******************************************
 Surge cấu hình:
 [MITM]
 hostname = %APPEND% testflight.apple.com
 
 [Script]
-TF获取参数 = type=http-request,pattern=^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$,requires-body=0,max-size=0,timeout=1000,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,script-update-interval=0
-TF监控自动加入 = type=cron,cronexp="0/5 * * * * *",wake-system=1,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,timeout=60
+TF Lấy tham số = type=http-request,pattern=^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$,requires-body=0,max-size=0,timeout=1000,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,script-update-interval=0
+TF Monitor tự động tham gia = type=cron,cronexp="0/5 * * * * *",wake-system=1,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,timeout=60
 ******************************************/
-const $ = new Env('𝐓𝐞𝐬𝐭𝐅𝐥𝐢𝐠𝐡𝐭 tự động tham gia')
+const $ = new Env('TestFlight tự động tham gia')
 $.isRequest = () => 'undefined' != typeof $request
 const [
     // ----------
-    // TF参数
+    // TF Tham số
     Key,
     SessionId,
     SessionDigest,
     RequestId,
     // ----------
-    // 应用参数
+    // Tham số ứng dụng
     APP_ID_Str,
     // ----------
-    // 配置参数
+    // Tham số cấu hình
     LOON_COUNT = 1, // Số lần thực hiện mỗi vòng lặp Mặc định 1
     INTERVAL = 0 // Thời gian chờ, đơn vị: giây Mặc định 0
 ] = ['tf_key', 'tf_session_id', 'tf_session_digest', 'tf_request_id', 'tf_app_ids', 'tf_loon_count', 'tf_interval'].map((key) => $.getdata(key))
@@ -71,7 +71,7 @@ const getParams = () => {
             $.setdata(APP_IDS.join(','), 'tf_app_ids')
             $.msg($.name, 'Lấy tham số ứng dụng thành công', `Đã bắt và lưu ID ứng dụng: ${appId}`)
         } else {
-            $.msg($.name, '', `ID ứng dụng: ${appId} Đã tồn tại, không cần thêm lại.`)
+            $.msg($.name, '', `ID ứng dụng: ${appId} đã tồn tại, không cần thêm lại.`)
         }
     }
     // Mở TF APP lấy thông tin tham số
@@ -86,7 +86,7 @@ const getParams = () => {
         $.setdata(request_id, 'tf_request_id')
         $.setdata(key, 'tf_key')
         const encrypt = (str) => str.slice(0, 4) + '***********'
-        $.msg($.name, 'Lấy tham số TF thành công', `𝐬𝐞𝐬𝐬𝐢𝐨𝐧_𝐢𝐝: ${encrypt(session_id)}\n𝐬𝐞𝐬𝐬𝐢𝐨𝐧_𝐝𝐢𝐠𝐞𝐬𝐭: ${encrypt(session_digest)}\n𝐫𝐞𝐪𝐮𝐞𝐬𝐭_𝐢𝐝: ${encrypt(request_id)}\n𝐤𝐞𝐲: ${encrypt(key)}`)
+        $.msg($.name, 'Lấy tham số TF thành công', `session_id: ${encrypt(session_id)}\nsession_digest: ${encrypt(session_digest)}\nrequest_id: ${encrypt(request_id)}\nkey: ${encrypt(key)}`)
     }
     // Mở liên kết để lấy tham số
     else if (/^https:\/\/testflight\.apple\.com\/join\/([A-Za-z0-9]+)$/.test(url)) {
@@ -95,7 +95,7 @@ const getParams = () => {
             let appId = appIdMatch[1]
             handler(appId)
         } else {
-            $.log('Không bắt được APP_ID của 𝐓𝐞𝐬𝐭𝐅𝐥𝐢𝐠𝐡𝐭')
+            $.log('Không bắt được APP_ID của TestFlight')
         }
     } else if (/v3\/accounts\/.*\/ru/.test(url)) {
         const reg = /v3\/accounts\/.*\/ru\/(.*[^\/accept])/
@@ -113,8 +113,8 @@ const TF_Check = (app_id) => {
             if (response.status !== 200) {
                 APP_IDS.splice(inArray(app_id), 1)
                 $.setdata(APP_IDS.join(','), 'tf_app_ids')
-                $.msg('Không phải là liên kết 𝐓𝐞𝐬𝐭𝐅𝐥𝐢𝐠𝐡𝐭 hợp lệ', '', `${app_id} Đã bị xóa`)
-                return reject(`${app_id} Không phải liên kết hợp lệ: Trạng thái ${response.status}，xóa APP_ID`)
+                $.msg('Không phải là liên kết TestFlight hợp lệ', '', `${app_id} đã bị xóa`)
+                return reject(`${app_id} Không phải liên kết hợp lệ: Trạng thái ${response.status}, xóa APP_ID`)
             }
             const appData = $.toObj(data)
             if (!appData) {
@@ -164,7 +164,7 @@ const TF_Join = (app_id) => {
                         $.log(`${appId}(${appData.data.app.name})`, `Mở để tham gia, đang tham gia...`)
                         const jsonBody = await TF_Join(appId)
                         $.log(`🎉Tham gia thành công`)
-                        $.msg(`${jsonBody.data.name}`, '𝐓𝐞𝐬𝐭𝐅𝐥𝐢𝐠𝐡𝐭 tham gia thành công')
+                        $.msg(`${jsonBody.data.name}`, 'TestFlight tham gia thành công')
                         APP_IDS[APP_IDS.indexOf(app_id)] = `${app_id.replace('#0', '#1')}`
                         $.setdata(APP_IDS.join(','), 'tf_app_ids')
                         break
@@ -177,7 +177,7 @@ const TF_Join = (app_id) => {
                 }
             }
             $.log('================================')
-            $.log(appId + 'Thực thi hoàn tất')
+            $.log(appId + ' Thực thi hoàn tất')
             $.log('================================')
         } else {
             $.log(`${appId} Đã tham gia, bỏ qua`)
