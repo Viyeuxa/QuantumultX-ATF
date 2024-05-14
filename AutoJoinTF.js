@@ -34,6 +34,8 @@ hostname = %APPEND% testflight.apple.com
 [Script]
 Lấy tham số TF = type=http-request,pattern=^https:\/\/testflight\.apple\.com\/(v3\/accounts\/.*[^\/accept]|join\/[A-Za-z0-9]+)$,requires-body=0,max-size=0,timeout=1000,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,script-update-interval=0
 TF Giám sát tự động tham gia = type=cron,cronexp="0/5 * * * * *",wake-system=1,script-path=https://raw.githubusercontent.com/Yuheng0101/X/main/Tasks/AutoJoinTF.js,timeout=60
+
+0/5 * * * * * https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/AutoJoinTF.js, tag=TF监控自动加入, img-url=https://raw.githubusercontent.com/githubdulong/Script/master/Images/testflight.png, enabled=true
 ******************************************/
 const $ = new Env('TF tự động tham gia')
 $.isRequest = () => 'undefined' != typeof $request
