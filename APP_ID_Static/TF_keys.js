@@ -13,25 +13,27 @@ const reg1 = /^https:\/\/testflight\.apple\.com\/v3\/accounts\/(.*)\/apps$/;
 // const reg2 = /^https:\/\/testflight\.apple\.com\/join\/(.*)/;
 
 if (reg1.test($request.url)) {
-  $prefs.setValueForKey(null, "request_id");
-  let url = $request.url;
-  let key = url.replace(/(.*accounts\/)(.*)(\/apps)/, "$2");
-  const headers = Object.keys($request.headers).reduce((t, i) => ((t[i.toLowerCase()] = $request.headers[i]), t), {});
+  const url = $request.url;
+  const key = url.replace(/(.*accounts\/)(.*)(\/apps)/, "$2");
+  const headers = $request.headers;
+  const session_id = headers["X-Session-Id"] || headers["x-session-id"];
+  const session_digest = headers["X-Session-Digest"] || headers["x-session-digest"];
+  const request_id = headers["X-Request-Id"] || headers["x-request-id"];
 
-  let session_id = headers["x-session-id"];
-  let session_digest = headers["x-session-digest"];
-  let request_id = headers["x-request-id"];
   $prefs.setValueForKey(key, "key");
   $prefs.setValueForKey(session_id, "session_id");
   $prefs.setValueForKey(session_digest, "session_digest");
   $prefs.setValueForKey(request_id, "request_id");
-  if ($prefs.valueForKey("request_id") !== null) {
+
+  if (request_id) {
     $notify("Tự động tham gia TF(s)", "Đã lấy thông tin", "");
   } else {
     $notify("Tự động tham gia TF(s)", "Không thể lấy thông tin", "Cần thêm testflight.apple.com");
   }
   $done({});
-} /* else if (reg2.test($request.url)) {
+} 
+
+/* else if (reg2.test($request.url)) {
   let appId = $prefs.valueForKey("APP_ID");
   if (!appId) {
     appId = "";
