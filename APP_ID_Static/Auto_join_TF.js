@@ -4,7 +4,7 @@
 
 !(async () => {
   const githubUrl = "https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/APP_ID_Static/APP_ID_List.txt";
-  let ids = await fetch(githubUrl)
+    ids = await fetch(githubUrl)
     .then(response => response.text());
     if (ids == "") {
       $notify("Danh sách APP_ID là rỗng", "Cần thêm APP_ID mới nhé", "");
