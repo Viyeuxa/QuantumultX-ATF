@@ -58,7 +58,7 @@ function autoPost(ID) {
             console.log(ID + " " + jsonData.messages[0].message);
             resolve();
           } else if (jsonData.data.status === "FULL") {
-            console.log(ID+"("+jsonData.data.name+")" + " " + jsonData.data.message);
+            console.log(ID + " " + jsonData.data.message);
             resolve();
           } else {
             $task.fetch({ url: testurl + ID + "/accept", method: "POST", headers: header }).then((res) => {
