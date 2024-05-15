@@ -8,7 +8,7 @@
     .then(response => response.text())
     .then(text => text.split('\n').filter(id => id.trim() !== ''));
     if (ids.length === 0) {
-      $notify("Danh sách APP_ID là rỗng", "Cần thêm APP_ID mới", "");
+      $notify("Danh sách APP_ID là rỗng", "Cần thêm APP_ID mới nhé", "");
       $done();
     } else {
       try {
