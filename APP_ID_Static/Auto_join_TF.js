@@ -1,44 +1,54 @@
 //*********************************
-// */10 * * * * * https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/APP_ID_Static/Auto_join_TF.js, tag=TestFlight自动加入, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/testflight.png, enabled=true
+// */10 * * * * https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/APP_ID_Static/Auto_join_TF.js, tag=TestFlight自动加入, img-url=https://raw.githubusercontent.com/Orz-3/mini/master/Color/testflight.png, enabled=true
 //*********************************
 
 !(async () => {
   const githubUrl = "https://raw.githubusercontent.com/Viyeuxa/QuantumultX-ATF/main/APP_ID_Static/APP_ID_List.txt";
-    ids = await fetch(githubUrl)
-    .then(response => response.text());
-    if (ids == "") {
+  try {
+    const response = await fetch(githubUrl);
+    if (!response.ok) throw new Error("Không thể tải danh sách APP_ID từ GitHub");
+    
+    let ids = await response.text();
+    if (ids.trim() === "") {
       $notify("Danh sách APP_ID là rỗng", "Cần thêm APP_ID mới nhé", "");
       $done();
-    } else {
-      ids = ids.split(",");
-      try {
-        for await (const ID of ids) {
-          await autoPost(ID);
-        }
-      } catch (error) {
-        console.log(error);
-        $done();
-      }
+      return;
     }
-    $done();
+
+    ids = ids.split('\n').map(id => id.trim()).filter(id => id !== "");
+    if (ids.length === 0) {
+      $notify("Danh sách APP_ID là rỗng", "Cần thêm APP_ID mới nhé", "");
+      $done();
+      return;
+    }
+
+    try {
+      for (const ID of ids) {
+        await autoPost(ID);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
+    $notify("Lỗi khi tải danh sách APP_ID", error.message, "");
+  }
+  $done();
 })();
 
 function autoPost(ID) {
-  let Key = $prefs.valueForKey("key");
-  let testurl = "https://testflight.apple.com/v3/accounts/" + Key + "/ru/";
-  let header = {
+  const Key = $prefs.valueForKey("key");
+  const testurl = "https://testflight.apple.com/v3/accounts/" + Key + "/ru/";
+  const header = {
     "X-Session-Id": `${$prefs.valueForKey("session_id")}`,
     "X-Session-Digest": `${$prefs.valueForKey("session_digest")}`,
     "X-Request-Id": `${$prefs.valueForKey("request_id")}`,
   };
-  return new Promise(function (resolve) {
+  return new Promise((resolve) => {
     $task.fetch({ url: testurl + ID, method: "GET", headers: header }).then(
       (resp) => {
         const { body: data } = resp;
-        if (resp.status == 404) {
-/*           ids = $prefs.valueForKey("APP_ID").split(",");
-          ids = ids.filter((ids) => ids !== ID);
-          $prefs.setValueForKey(ids.toString(), "APP_ID"); */
+        if (resp.status === 404) {
           console.log(ID + " " + "không tồn tại hãy xoá APP_ID đó");
           $notify(ID, "TF không tồn tại", "hãy xoá APP_ID đó");
           resolve();
@@ -47,7 +57,7 @@ function autoPost(ID) {
           if (jsonData.data == null) {
             console.log(ID + " " + jsonData.messages[0].message);
             resolve();
-          } else if (jsonData.data.status == "FULL") {
+          } else if (jsonData.data.status === "FULL") {
             console.log(ID + " " + jsonData.data.message);
             resolve();
           } else {
@@ -56,16 +66,13 @@ function autoPost(ID) {
               let jsonBody = JSON.parse(body);
               $notify(jsonBody.data.name, "đã tham gia thành công", "");
               console.log(jsonBody.data.name + " đã tham gia thành công");
-/*               ids = $prefs.valueForKey("APP_ID").split(",");
-              // ids = ids.filter((ids) => ids !== ID);
-              $prefs.setValueForKey(ids.toString(), "APP_ID"); */
               resolve();
             });
           }
         }
       },
       (error) => {
-        if (error == "The request timed out.") {
+        if (error === "The request timed out.") {
           resolve();
         } else {
           $notify("Tự động tham gia TF: ", error, "");
