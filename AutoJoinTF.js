@@ -57,7 +57,8 @@ const baseURL = `https://testflight.apple.com/v3/accounts/${Key}/ru/`
 const headers = {
     'X-Session-Id': SessionId,
     'X-Session-Digest': SessionDigest,
-    'X-Request-Id': RequestId
+    'X-Request-Id': RequestId,
+    'User-Agent': 'Oasis/3.5.1 OasisBuild/425.2 iOS/17.5 model/iPhone12,1 hwp/t8030 build/21F79 (6; dt:203) AMS/1 TSE/0'
 }
 const inArray = (value, array = APP_IDS, separator = '#') => array.findIndex((item) => item.split(separator)[0] === value)
 // 获取参数
