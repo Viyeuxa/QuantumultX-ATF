@@ -43,6 +43,7 @@ function autoPost(ID) {
     "X-Session-Id": `${$prefs.valueForKey("session_id")}`,
     "X-Session-Digest": `${$prefs.valueForKey("session_digest")}`,
     "X-Request-Id": `${$prefs.valueForKey("request_id")}`,
+    "User-Agent": 'Oasis/3.5.1 OasisBuild/425.2 iOS/17.5 model/iPhone12,1 hwp/t8030 build/21F79 (6; dt:203) AMS/1 TSE/0',
   };
   return new Promise((resolve) => {
     $task.fetch({ url: testurl + ID, method: "GET", headers: header }).then(
