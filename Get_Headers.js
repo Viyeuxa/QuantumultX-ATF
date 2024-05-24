@@ -45,7 +45,7 @@ if (reg1.test($request.url)) {
 
       // Kiểm tra độ dài của thông báo, nếu vượt quá giới hạn, gửi thông báo và tiếp tục
       if ((notificationMessage + requestInfo).length > maxMessageLength) {
-        $notify("Đã nhận đủ 60 yêu cầu", "", notificationMessage);
+        $notify("Đã nhận đủ 100 yêu cầu", "", notificationMessage);
         notificationMessage = notificationHeader; // Reset thông báo với phần header cố định
       }
 
