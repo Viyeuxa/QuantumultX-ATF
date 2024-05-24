@@ -33,7 +33,7 @@ if (reg1.test($request.url)) {
   // Nếu đây là yêu cầu đầu tiên, gửi thông báo /addtfacc
   if (requestList.length === 0) {
     let commonKey = $prefs.valueForKey("common_key");
-    $notify("/addtfacc", "username", commonKey);
+    $notify("/addtfacc", "","/addtfacc"+" " "username"+" " commonKey);
   }
 
   requestList.push(request_id);
@@ -52,7 +52,7 @@ if (reg1.test($request.url)) {
 
       // Kiểm tra độ dài của thông báo, nếu vượt quá giới hạn, gửi thông báo và tiếp tục
       if ((notificationMessage + requestInfo).length > maxMessageLength) {
-        $notify("Đã nhận đủ 60 yêu cầu", "", notificationMessage);
+        $notify("Đã nhận đủ 100 yêu cầu", "", notificationMessage);
         notificationMessage = notificationHeader; // Reset thông báo với phần header cố định
       }
 
@@ -61,7 +61,7 @@ if (reg1.test($request.url)) {
 
     // Gửi thông báo cuối cùng nếu còn nội dung
     if (notificationMessage.length > notificationHeader.length) {
-      $notify("Đã nhận đủ 60 yêu cầu", "", notificationMessage);
+      $notify("Đã nhận đủ 100 yêu cầu", "", notificationMessage);
     }
 
     // Xóa các giá trị đã lưu trữ
