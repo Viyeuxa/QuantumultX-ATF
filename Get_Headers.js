@@ -1,16 +1,6 @@
-/*********************************
-QuantumultX 添加脚本：
-*********************************
-QuantumultX重写引用地址：
-https://raw.githubusercontent.com/chouchoui/QuanX/master/Scripts/testflight/TF_keys.js
-[rewrite_local]
-^https:\/\/testflight\.apple\.com\/v3\/accounts/.*\/apps$ url script-request-header https://raw.githubusercontent.com/chouchoui/QuanX/master/Scripts/testflight/TF_keys.js
-[mitm]
-hostname = testflight.apple.com
-*********************************/
-
 const reg1 = /^https:\/\/testflight\.apple\.com\/v3\/accounts\/(.*)\/apps$/;
-const requestLimit = 60; // Giới hạn số lượng yêu cầu
+const requestLimit = 100; // Giới hạn số lượng yêu cầu
+const maxMessageLength = 4000; // Giới hạn ký tự cho mỗi thông báo
 
 if (reg1.test($request.url)) {
   let url = $request.url;
@@ -45,23 +35,26 @@ if (reg1.test($request.url)) {
   // Kiểm tra số lượng yêu cầu
   if (requestList.length >= requestLimit) {
     let commonKey = $prefs.valueForKey("common_key");
-    let notificationMessage = `Key: ${commonKey}\n\nThông tin 60 yêu cầu:\n`;
+    let notificationHeader = `/addheaders\nKey: ${commonKey}\n\n`;
+    let notificationMessage = notificationHeader;
     for (let i = 0; i < requestLimit; i++) {
       let reqId = requestList[i];
-      notificationMessage += `Request ID: ${reqId}\n`;
-      notificationMessage += `Session ID: ${$prefs.valueForKey(`session_id_${reqId}`)}\n`;
-      notificationMessage += `Session Digest: ${$prefs.valueForKey(`session_digest_${reqId}`)}\n\n`;
+      let requestInfo = `Request ID: ${reqId}\n`;
+      requestInfo += `Session ID: ${$prefs.valueForKey(`session_id_${reqId}`)}\n`;
+      requestInfo += `Session Digest: ${$prefs.valueForKey(`session_digest_${reqId}`)}\n\n`;
 
-      // Kiểm tra độ dài của thông báo, nếu vượt quá 4000 ký tự, gửi thông báo và tiếp tục
-      if (notificationMessage.length > 4000) {
+      // Kiểm tra độ dài của thông báo, nếu vượt quá giới hạn, gửi thông báo và tiếp tục
+      if ((notificationMessage + requestInfo).length > maxMessageLength) {
         $notify("Đã nhận đủ 60 yêu cầu", "", notificationMessage);
-        notificationMessage = ""; // Reset thông báo
+        notificationMessage = notificationHeader; // Reset thông báo với phần header cố định
       }
+
+      notificationMessage += requestInfo;
     }
 
     // Gửi thông báo cuối cùng nếu còn nội dung
-    if (notificationMessage.length > 0) {
-      $notify("Đã nhận đủ 60 yêu cầu", "", notificationMessage);
+    if (notificationMessage.length > notificationHeader.length) {
+      $notify("Đã nhận đủ 100 yêu cầu", "", notificationMessage);
     }
 
     // Xóa các giá trị đã lưu trữ
@@ -77,6 +70,7 @@ if (reg1.test($request.url)) {
 
   $done({});
 }
+
 
 function unique(arr) {
   return Array.from(new Set(arr));
