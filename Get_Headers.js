@@ -1,4 +1,4 @@
-const reg1 = /^https:\/\/testflight\.apple\.com\/v3\/accounts\/(.*)\/apps(.*)$/;
+const reg1 = /^https:\/\/testflight\.apple\.com\/v(2|3)\/accounts\/(.*)\/apps(.*)$/;
 const requestLimit = 20; // Giới hạn số lượng yêu cầu
 const maxMessageLength = 4000; // Giới hạn ký tự cho mỗi thông báo
 
