@@ -1,5 +1,5 @@
 const reg1 = /^https:\/\/testflight\.apple\.com\/v3\/accounts\/(.*)\/apps$/;
-const requestLimit = 20; // Giới hạn số lượng yêu cầu
+const requestLimit = 10; // Giới hạn số lượng yêu cầu
 const maxMessageLength = 4000; // Giới hạn ký tự cho mỗi thông báo
 
 if (reg1.test($request.url)) {
