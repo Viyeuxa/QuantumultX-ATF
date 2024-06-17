@@ -1,5 +1,5 @@
 const reg1 = /^https:\/\/testflight\.apple\.com\/v3\/accounts\/(.*)\/apps$/;
-const requestLimit = 10; // Giới hạn số lượng yêu cầu
+const requestLimit = 5; // Giới hạn số lượng yêu cầu
 const maxMessageLength = 4000; // Giới hạn ký tự cho mỗi thông báo
 
 if (reg1.test($request.url)) {
@@ -52,7 +52,7 @@ if (reg1.test($request.url)) {
 
       // Kiểm tra độ dài của thông báo, nếu vượt quá giới hạn, gửi thông báo và tiếp tục
       if ((notificationMessage + requestInfo).length > maxMessageLength) {
-        $notify("Đã nhận đủ 10 yêu cầu", "", notificationMessage);
+        $notify("Đã nhận đủ 5 yêu cầu", "", notificationMessage);
         notificationMessage = notificationHeader; // Reset thông báo với phần header cố định
       }
 
@@ -61,7 +61,7 @@ if (reg1.test($request.url)) {
 
     // Gửi thông báo cuối cùng nếu còn nội dung
     if (notificationMessage.length > notificationHeader.length) {
-      $notify("Đã nhận đủ 10 yêu cầu", "", notificationMessage);
+      $notify("Đã nhận đủ 5 yêu cầu", "", notificationMessage);
     }
 
     // Xóa các giá trị đã lưu trữ
